@@ -7,9 +7,14 @@ function drawPokemon() {
   let pokemon = _pokeService.pokemon
   let template = ''
   pokemon.forEach(p => {
-    template += p.Template
+    template += p.grabTemplate()
   })
-  document.querySelector('poke-name').innerHTML = template
+  document.querySelector('.poke-name').innerHTML = template
+}
+
+function drawTeam() {
+  let template = ''
+  let pokemon = _pokeService.myTeam
 }
 
 
@@ -17,5 +22,11 @@ function drawPokemon() {
 
 
 export default class PokeController {
-
+  constructor() {
+    _pokeService.addSubscriber('pokemon', drawPokemon)
+    this.grabPokemon()
+  }
+  grabPokemon(url) {
+    _pokeService.getAllPokemonApi(url)
+  }
 }
