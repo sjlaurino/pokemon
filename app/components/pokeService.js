@@ -11,13 +11,14 @@ let _sandbox = axios.create({
 })
 
 let _state = {
-  pokemon: [],
-  _myTeam: []
+  apiPokemon: [],
+  myTeam: {}
+  //important that the individual pokemon you select are an object and not an array.
 }
 
 let _subscribers = {
   pokemon: [],
-  _myTeam: []
+  myTeam: []
 }
 
 function setState(prop, value) {
@@ -34,50 +35,33 @@ export default class PokeService {
     _subscribers[prop].push(fn)
   }
 
-  get pokemon() {
-    return _state.pokemon.map(p => new Pokemon(p))
+  get apiPokemon() {
+    return _state.apiPokemon.map(p => new Pokemon(p))
   }
 
   get myTeam() {
-    return _state.myTeam.map(p => new Pokemon(p))
+    return _state.myTeam
   }
 
-  addToTeam(name) {
-    let pokemon = _state.pokemon.find(pokemon => pokemon.name == name)
-    let myPokemon = _state._myTeam.find(p => p.name == pokemon.name)
-    if (myPokemon) {
-      alert('Duplicate Hero')
-      return
-    }
-    _sandbox.post('', pokemon)
+  getPokemonData() {
+    _pokemonApi.get()
       .then(res => {
-        this.getMyTeamData()
+        let data = res.data.data.results.map(d => new Pokemon(d))
+        setState('apiPokemon', data)
       })
       .catch(err => {
-        console.log(err);
+        console.error(err)
       })
   }
 
-  getMyTeamData() {
-    _sandbox.get()
+  pokeCard(name) {
+    _pokemonApi.get(name)
       .then(res => {
-        let data = res.data.data.map(d => new Pokemon(d))
+        let data = new Pokemon(res.data)
         setState('myTeam', data)
       })
-  }
-
-
-
-
-
-  getAllPokemonApi(url = '') {
-    _pokemonApi.get(url)
-      .then(response => {
-        console.log(response)
-        let pokemon = response.data.results
-        console.log('pokemon', pokemon)
-        setState('pokemon', pokemon)
+      .catch(err => {
+        console.error(err)
       })
   }
-
 }

@@ -4,17 +4,18 @@ let _pokeService = new PokeService()
 
 
 function drawPokemon() {
-  let pokemon = _pokeService.pokemon
+  let pokemon = _pokeService.apiPokemon
   let template = ''
   pokemon.forEach(p => {
     template += p.grabTemplate()
   })
   document.querySelector('.poke-name').innerHTML = template
+  debugger
 }
 
 function drawTeam() {
-  let template = ''
-  let pokemon = _pokeService.myTeam
+  let template = _pokeService.myTeam.pokeDetailsCard()
+  document.querySelector('.my-team').innerHTML = template
 }
 
 
@@ -23,10 +24,11 @@ function drawTeam() {
 
 export default class PokeController {
   constructor() {
-    _pokeService.addSubscriber('pokemon', drawPokemon)
-    this.grabPokemon()
+    _pokeService.addSubscriber('apiPokemon', drawPokemon)
+    _pokeService.addSubscriber('myTeam', drawTeam)
+    _pokeService.getPokemonData()
   }
-  grabPokemon(url) {
-    _pokeService.getAllPokemonApi(url)
+  pokeCard(name) {
+    _pokeService.pokeCard(name)
   }
 }
