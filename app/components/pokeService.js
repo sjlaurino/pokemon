@@ -13,7 +13,7 @@ let _sandbox = axios.create({
 let _state = {
   apiPokemon: [],
   myTeam: {}
-  //important that the individual pokemon you select are an object and not an array.
+  //important that the individual pokemon you select is an object and not an array.
 }
 
 let _subscribers = {
